@@ -400,7 +400,31 @@ section h2.sec-title {
 
 /* Mobile Screen */
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 468px) {
+  footer .footer-wrap {
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+
+  footer .left,
+  footer .right {
+    text-align: left;
+    order: 1;
+    padding: 30px 0;
+  }
+
+  footer .middle {
+    order: 2;
+    text-align: left;
+    margin: 0 -30px;
+  }
+
+  footer .middle .social {
+    justify-content: left;
+  }
+  .contact {
+    grid-template-columns: 100%;
+  }
   #offers {
     height: 100dvh;
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8)), url("../../assets/DJI_0755.JPG");

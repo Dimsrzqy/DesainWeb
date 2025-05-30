@@ -285,7 +285,7 @@ section h2.sec-title {
     padding: 20px;
     background: var(--primary);
     color: white;
-    background: linear-gradient(135deg, #523b27, #8a6a4eb0);
+    background: linear-gradient(135deg, #216445, #205e40);
   }
 
   #cup .item-text img {
