@@ -181,25 +181,106 @@
           -->
 
     <!-- Modal HTML structure -->
+    <!-- Modal HTML structure -->
     <div id="cartModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Cart Items</h2>
+          <h2>Keranjang Belanja</h2>
           <span class="close">&times;</span>
         </div>
         <div id="cartItemsContainer"></div>
         <div id="modal-footer">
-          <div class="dropdown">
-            <button class="dropbtn" id="dropbtn">Dine In</button>
-            <div class="dropdown-content" id="dropdown-content">
-              <a data-value="Dine In">Dine In</a>
-              <hr />
-              <a data-value="Take Away">Take Away</a>
+          <div class="cart-summary">
+            <div class="summary-item">
+              <span>Subtotal:</span>
+              <span id="subtotal">Rp 0</span>
+            </div>
+            <div class="summary-item">
+              <span>Diskon:</span>
+              <span id="discount">Rp 0</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total:</span>
+              <span id="total-price">Rp 0</span>
             </div>
           </div>
+
+          <div class="cart-options">
+            <div class="option-group">
+              <label>Metode Pembayaran:</label>
+              <div class="dropdown">
+                <button class="dropbtn" id="payment-dropbtn">Bayar Sekarang</button>
+                <div class="dropdown-content" id="payment-dropdown-content">
+                  <a data-value="Bayar Sekarang">Bayar Sekarang</a>
+                  <hr />
+                  <a data-value="Bayar Nanti">Bayar Nanti</a>
+                </div>
+              </div>
+            </div>
+
+            <div id="payment-details" class="payment-details">
+              <!-- Bayar Sekarang -->
+              <div id="pay-now" class="payment-method">
+                <div class="payment-options">
+                  <label>
+                    <input type="radio" name="payment-type" value="tunai" checked />
+                    Tunai
+                  </label>
+                  <label>
+                    <input type="radio" name="payment-type" value="transfer" />
+                    Transfer Bank
+                  </label>
+                </div>
+                <div id="tunai-details" class="payment-type-details">
+                  <div class="input-group">
+                    <label>Jumlah Uang:</label>
+                    <input type="number" id="cash-amount" placeholder="Masukkan jumlah uang" />
+                  </div>
+                  <div class="change-details">
+                    <span>Kembalian:</span>
+                    <span id="change-amount">Rp 0</span>
+                  </div>
+                </div>
+                <div id="transfer-details" class="payment-type-details" style="display: none">
+                  <p>Transfer ke rekening:</p>
+                  <p class="bank-details">Bank BCA: 1234567890</p>
+                  <p class="bank-details">a.n. Koperasi Nuris</p>
+                  <div class="input-group">
+                    <label>Upload Bukti Transfer:</label>
+                    <input type="file" id="transfer-proof" accept="image/*" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bayar Nanti -->
+              <div id="pay-later" class="payment-method" style="display: none">
+                <div class="input-group">
+                  <label>Nama Santri:</label>
+                  <input type="text" id="student-name" placeholder="Masukkan nama santri" />
+                </div>
+                <div class="input-group">
+                  <label>Kelas:</label>
+                  <input type="text" id="student-class" placeholder="Masukkan kelas" />
+                </div>
+                <div class="input-group">
+                  <label>Asrama:</label>
+                  <input type="text" id="student-dorm" placeholder="Masukkan asrama" />
+                </div>
+                <div class="input-group">
+                  <label>No. HP Wali:</label>
+                  <input type="tel" id="parent-phone" placeholder="Masukkan nomor HP wali" />
+                </div>
+                <div class="payment-info">
+                  <p>Batas Pembayaran: <span id="payment-due-date"></span></p>
+                  <p class="warning">* Pembayaran harus dilakukan dalam 7 hari</p>
+                  <p class="warning">* Barang bisa diambil setelah pembayaran</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="checkout">
-            <p id="total-price"></p>
-            <span href="">Check Out</span>
+            <button id="checkout-btn" class="checkout-btn">Checkout</button>
           </div>
         </div>
       </div>

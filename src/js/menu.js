@@ -95,72 +95,65 @@ products.forEach((product) => {
     const clonedContent = product.cloneNode(true);
     const popup = document.querySelector(".popup");
     const ov = document.querySelector(".overlay");
+    const body = document.body;
 
     popup.innerHTML = "";
     popup.appendChild(clonedContent);
 
-    // Tambahkan elemen jumlah (amount)
-    popup.querySelector(".price").insertAdjacentHTML(
-      "beforebegin",
-      `
-      <div class="amount">
-        <span>Amount</span>
-        <div class="number">
-          <div class="minus" onclick="decreaseValue()"><i class="fas fa-minus"></i></div>
-          <div class="value"><input id="product-amount" value="1"/></div>
-          <div class="plus" onclick="increaseValue()"><i class="fas fa-plus"></i></div>
+    const wrap = popup.querySelector(".product-wrap");
+    const choice = popup.querySelector(".product-choice");
+    const priceEl = popup.querySelector(".price");
+
+    // Tambahkan elemen jumlah sebelum harga
+    if (priceEl) {
+      priceEl.insertAdjacentHTML(
+        "beforebegin",
+        `
+        <div class="amount">
+          <span>Amount</span>
+          <div class="number">
+            <div class="minus" onclick="decreaseValue()"><i class="fas fa-minus"></i></div>
+            <div class="value"><input id="product-amount" value="1"/></div>
+            <div class="plus" onclick="increaseValue()"><i class="fas fa-plus"></i></div>
+          </div>
         </div>
-      </div>
-    `
-    );
-
-    // Tambahkan dropdown size, type, sugar + hidden input
-    popup.querySelector(".product-choice").insertAdjacentHTML(
-      "beforeend",
       `
-      <div class="size">
-        <span>Size</span>
-        <select class="fixed" onchange="stillValue(); updateHiddenInput('hiddenSizeInput', this.value)">
-            <option selected>Regular</option>
-            <option>Medium</option>
-            <option>Large</option>
-        </select>
-        <input name="size" type="hidden" id="hiddenSizeInput" value="Regular" />
-      </div>
-      <div class="type">
-        <span>Ice</span>
-        <select class="fixed" onchange="stillValue(); updateHiddenInput('hiddenTypeInput', this.value)">
-            <option>Less</option>
-            <option selected>Normal</option>
-            <option>Extra</option>
-        </select>
-        <input name="type" type="hidden" id="hiddenTypeInput" value="Normal" />
-      </div>
-      <div class="sugar">
-        <span>Sugar</span>
-        <select class="fixed" onchange="stillValue(); updateHiddenInput('hiddenSugarInput', this.value)">
-            <option>Less</option>
-            <option selected>Normal</option>
-            <option>Extra</option>
-        </select>
-        <input name="sugar" type="hidden" id="hiddenSugarInput" value="Normal" />
-      </div>
-    `
-    );
+      );
+    }
 
-    // Tambahkan tombol addToCart dan close
-    const addBtn = document.createElement("div");
-    addBtn.className = "add";
-    addBtn.innerHTML = `<span>Add to cart</span><i class="fas fa-cart-plus"></i>`;
-    addBtn.onclick = addToCart;
+    // Tambahkan dropdown Size (tanpa Ice & Sugar)
+    if (choice) {
+      choice.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="size">
+          <span>Size</span>
+          <select class="fixed" onchange="stillValue(); updateHiddenInput('hiddenSizeInput', this.value)">
+              <option selected>Regular</option>
+              <option>Medium</option>
+              <option>Large</option>
+          </select>
+          <input name="size" type="hidden" id="hiddenSizeInput" value="Regular" />
+        </div>
+      `
+      );
+    }
 
-    const closeBtn = document.createElement("div");
-    closeBtn.className = "close-pop";
-    closeBtn.innerHTML = `<i class="fas fa-times"></i>`;
-    closeBtn.onclick = closePopup;
+    // Tombol add dan close
+    if (wrap) {
+      const addBtn = document.createElement("div");
+      addBtn.className = "add";
+      addBtn.innerHTML = `<span>Add to cart</span><i class="fas fa-cart-plus"></i>`;
+      addBtn.onclick = addToCart;
 
-    popup.querySelector(".product-wrap").appendChild(addBtn);
-    popup.querySelector(".product-wrap").appendChild(closeBtn);
+      const closeBtn = document.createElement("div");
+      closeBtn.className = "close-pop";
+      closeBtn.innerHTML = `<i class="fas fa-times"></i>`;
+      closeBtn.onclick = closePopup;
+
+      wrap.appendChild(addBtn);
+      wrap.appendChild(closeBtn);
+    }
 
     popup.classList.add("show");
     ov.classList.add("show");
@@ -173,21 +166,7 @@ function closePopup() {
   document.querySelector(".popup").classList.remove("show");
   document.querySelector(".overlay").classList.remove("show");
   fadeOut(document.querySelector(".overlay"));
-  body.classList.remove("ov");
-}
-
-function appendHTML(selector, html) {
-  var elements = document.querySelectorAll(selector);
-  elements.forEach(function (element) {
-    element.innerHTML += html;
-  });
-}
-
-function beforeHTML(selector, html) {
-  var elements = document.querySelectorAll(selector);
-  elements.forEach(function (element) {
-    element.insertAdjacentHTML("beforebegin", html);
-  });
+  document.body.classList.remove("ov");
 }
 
 function addToCart() {
@@ -196,22 +175,10 @@ function addToCart() {
   const productQuantity = document.querySelector(".popup #product-amount").value;
   const productImage = document.querySelector(".popup .img img").getAttribute("src");
   const originalPrice = document.querySelector(".popup .price").getAttribute("value");
-  const size = document.querySelector(".popup #hiddenSizeInput").value;
-  const type = document.querySelector(".popup #hiddenTypeInput").value;
-  const sugar = document.querySelector(".popup #hiddenSugarInput").value;
+  const size = document.querySelector(".popup #hiddenSizeInput")?.value || "Regular";
 
-  // Initialize cartItems as an empty array
-  let cartItems = [];
+  let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
 
-  // Retrieve existing cart items from localStorage
-  const existingCartItems = localStorage.getItem("cartItems");
-
-  if (existingCartItems) {
-    // Parse the existing cart items from localStorage
-    cartItems = JSON.parse(existingCartItems);
-  }
-
-  // Add the new product data to the existing cart items
   const newProductData = {
     name: productName,
     price: productPrice,
@@ -219,18 +186,11 @@ function addToCart() {
     quantity: productQuantity,
     originalPrice: originalPrice,
     size: size,
-    type: type,
-    sugar: sugar,
   };
+
   cartItems.push(newProductData);
-
-  // Save the updated cart items back to localStorage
   localStorage.setItem("cartItems", JSON.stringify(cartItems));
-
-  // Update cart count
   updateCartCount();
-
-  // Optionally, you can provide feedback to the user
   alert("Product added to cart!");
   closePopup();
 }
@@ -262,37 +222,25 @@ function stillValue() {
   updatePrice(currentValue);
 }
 
-// Function to update the hidden input based on the selected option
 function updateHiddenInput(inputId, value) {
   const hiddenInput = document.getElementById(inputId);
-  hiddenInput.value = value;
-  console.log(`Hidden input ${inputId} updated to:`, hiddenInput.value);
+  if (hiddenInput) hiddenInput.value = value;
 }
 
 function updatePrice(quantity) {
   const priceElement = document.querySelector(".price");
   const price = parseInt(priceElement.getAttribute("value"));
   const sizeSelect = document.querySelector(".popup .size select");
+  let multiplier = 1;
+
   if (sizeSelect) {
-    const calculateTotalPrice = () => {
-      let multiplier = 1;
-      if (sizeSelect && sizeSelect.value === "Medium") {
-        multiplier = 1.25;
-      } else if (sizeSelect && sizeSelect.value === "Large") {
-        multiplier = 1.5;
-      }
-      const totalPrice = price * multiplier * quantity;
-      priceElement.textContent = "Rp " + totalPrice.toLocaleString("id-ID");
-      priceElement.setAttribute("priceValue", totalPrice);
-    };
-    sizeSelect.addEventListener("change", calculateTotalPrice);
-    calculateTotalPrice();
-  } else {
-    const totalPrice = price * quantity;
-    priceElement.textContent = "Rp " + totalPrice.toLocaleString("id-ID");
-    priceElement.setAttribute("priceValue", totalPrice);
-    // priceElement.setAttribute("value", totalPrice);
+    if (sizeSelect.value === "Medium") multiplier = 1.25;
+    else if (sizeSelect.value === "Large") multiplier = 1.5;
   }
+
+  const totalPrice = price * multiplier * quantity;
+  priceElement.textContent = "Rp " + totalPrice.toLocaleString("id-ID");
+  priceElement.setAttribute("priceValue", totalPrice);
 }
 
 function fadeOut(el) {
