@@ -76,17 +76,6 @@ function displayCartModal() {
     const itemDescription = document.createElement("div");
     itemDescription.classList.add("item-description");
 
-    const itemSize = document.createElement("p");
-    itemSize.textContent = "Size : " + item.size;
-    const itemType = document.createElement("p");
-    itemType.textContent = "Ice : " + item.type;
-    const itemSugar = document.createElement("p");
-    itemSugar.textContent = "Sugar : " + item.sugar;
-
-    itemDescription.appendChild(itemSize);
-    itemDescription.appendChild(itemType);
-    itemDescription.appendChild(itemSugar);
-
     // Create item price element
     const itemPrice = document.createElement("p");
     itemPrice.textContent = item.price;
