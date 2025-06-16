@@ -357,6 +357,24 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         processPayLater();
       }
+
+      // Clear cart data
+      localStorage.removeItem("cartItems");
+      document.querySelector(".cart-count").textContent = "0";
+
+      // Reset cart summary
+      document.getElementById("total-price").textContent = "Rp 0";
+
+      // Clear cart items container
+      document.getElementById("cartItemsContainer").innerHTML = "";
+
+      // Close modal
+      const modal = document.getElementById("cartModal");
+      modal.style.display = "none";
+
+      // Setelah checkout, reset juga input pickup
+      document.getElementById("pickup-student-name").value = "";
+      document.getElementById("pickup-dorm").value = "";
     });
   }
 });
@@ -421,20 +439,7 @@ function calculateTotal() {
 // Update cart summary
 function updateCartSummary() {
   const total = calculateTotal();
-  document.getElementById("subtotal").textContent = `Rp ${total.toLocaleString("id-ID")}`;
   document.getElementById("total-price").textContent = `Rp ${total.toLocaleString("id-ID")}`;
-
-  // Update change amount if cash amount is already input
-  const cashAmount = parseFloat(document.getElementById("cash-amount").value) || 0;
-  const change = cashAmount - total;
-  const changeAmount = document.getElementById("change-amount");
-  if (change >= 0) {
-    changeAmount.textContent = `Rp ${change.toLocaleString("id-ID")}`;
-    changeAmount.style.color = "#4CAF50";
-  } else {
-    changeAmount.textContent = `Rp 0`;
-    changeAmount.style.color = "#ff0000";
-  }
 }
 
 // Validate checkout

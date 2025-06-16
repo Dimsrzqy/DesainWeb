@@ -9,6 +9,107 @@
     <link rel="icon" href="./assets/LOGO NURIS (1).png" type="image/png" />
     <link media="all" rel="stylesheet" href="./src/css/menu.css" />
     <link media="all" rel="stylesheet" href="./src/css/product.css" />
+    <style>
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+      }
+
+      .dropdown-content.show {
+        display: block;
+      }
+
+      .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #f1f1f1;
+      }
+
+      .dropdown-content hr {
+        margin: 0;
+        border: none;
+        border-top: 1px solid #ddd;
+      }
+
+      .delivery-method {
+        margin-top: 20px;
+      }
+
+      .delivery-method .info {
+        color: #666;
+        font-style: italic;
+      }
+
+      /* Popup styles */
+      .custom-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-width: 400px;
+        width: 90%;
+      }
+
+      .custom-popup-content {
+        text-align: center;
+      }
+
+      .custom-popup h3 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .custom-popup p {
+        margin-bottom: 10px;
+        color: #666;
+      }
+
+      .custom-popup .close-popup {
+        margin-top: 20px;
+        padding: 8px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .custom-popup .close-popup:hover {
+        background-color: #45a049;
+      }
+
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+    </style>
   </head>
 
   <body>
@@ -665,14 +766,6 @@
         <div id="cartItemsContainer"></div>
         <div id="modal-footer">
           <div class="cart-summary">
-            <div class="summary-item">
-              <span>Subtotal:</span>
-              <span id="subtotal">Rp 0</span>
-            </div>
-            <div class="summary-item">
-              <span>Diskon:</span>
-              <span id="discount">Rp 0</span>
-            </div>
             <div class="summary-item total">
               <span>Total:</span>
               <span id="total-price">Rp 0</span>
@@ -681,73 +774,52 @@
 
           <div class="cart-options">
             <div class="option-group">
-              <label>Metode Pembayaran:</label>
+              <label>Metode Pengambilan:</label>
               <div class="dropdown">
-                <button class="dropbtn" id="payment-dropbtn">Bayar Sekarang</button>
-                <div class="dropdown-content" id="payment-dropdown-content">
-                  <a data-value="Bayar Sekarang">Bayar Sekarang</a>
+                <button class="dropbtn" id="delivery-dropbtn">Diambil Sendiri</button>
+                <div class="dropdown-content" id="delivery-dropdown-content">
+                  <a data-value="Diambil Sendiri">Diambil Sendiri</a>
                   <hr />
-                  <a data-value="Bayar Nanti">Bayar Nanti</a>
+                  <a data-value="Diantar">Diantar</a>
                 </div>
               </div>
             </div>
 
-            <div id="payment-details" class="payment-details">
-              <!-- Bayar Sekarang -->
-              <div id="pay-now" class="payment-method">
-                <div class="payment-options">
-                  <label>
-                    <input type="radio" name="payment-type" value="tunai" checked />
-                    Tunai
-                  </label>
-                  <label>
-                    <input type="radio" name="payment-type" value="transfer" />
-                    Transfer Bank
-                  </label>
+            <div id="delivery-details" class="delivery-details">
+              <!-- Diambil Sendiri -->
+              <div id="pickup" class="delivery-method">
+                <div class="input-group">
+                  <label for="pickup-student-name">Nama Santri:</label>
+                  <input type="text" id="pickup-student-name" placeholder="Masukkan nama santri" />
                 </div>
-                <div id="tunai-details" class="payment-type-details">
-                  <div class="input-group">
-                    <label>Jumlah Uang:</label>
-                    <input type="number" id="cash-amount" placeholder="Masukkan jumlah uang" />
-                  </div>
-                  <div class="change-details">
-                    <span>Kembalian:</span>
-                    <span id="change-amount">Rp 0</span>
-                  </div>
+                <div class="input-group">
+                  <label for="pickup-dorm">Asrama:</label>
+                  <input type="text" id="pickup-dorm" placeholder="Masukkan asrama" />
                 </div>
-                <div id="transfer-details" class="payment-type-details" style="display: none">
-                  <p>Transfer ke rekening:</p>
-                  <p class="bank-details">Bank BCA: 1234567890</p>
-                  <p class="bank-details">a.n. Koperasi Nuris</p>
-                  <div class="input-group">
-                    <label>Upload Bukti Transfer:</label>
-                    <input type="file" id="transfer-proof" accept="image/*" />
-                  </div>
-                </div>
+                <p class="info">Silahkan ambil pesanan Anda di Koperasi Nuris</p>
               </div>
 
-              <!-- Bayar Nanti -->
-              <div id="pay-later" class="payment-method" style="display: none">
+              <!-- Diantar -->
+              <div id="delivery" class="delivery-method" style="display: none">
                 <div class="input-group">
                   <label>Nama Santri:</label>
                   <input type="text" id="student-name" placeholder="Masukkan nama santri" />
-                </div>
-                <div class="input-group">
-                  <label>Kelas:</label>
-                  <input type="text" id="student-class" placeholder="Masukkan kelas" />
                 </div>
                 <div class="input-group">
                   <label>Asrama:</label>
                   <input type="text" id="student-dorm" placeholder="Masukkan asrama" />
                 </div>
                 <div class="input-group">
-                  <label>No. HP Wali:</label>
-                  <input type="tel" id="parent-phone" placeholder="Masukkan nomor HP wali" />
+                  <label>Lembaga:</label>
+                  <input type="text" id="student-institution" placeholder="Masukkan lembaga" />
+                </div>
+                <div class="input-group">
+                  <label>No. HP:</label>
+                  <input type="tel" id="student-phone" placeholder="Masukkan nomor HP" />
                 </div>
                 <div class="payment-info">
-                  <p>Batas Pembayaran: <span id="payment-due-date"></span></p>
-                  <p class="warning">* Pembayaran harus dilakukan dalam 7 hari</p>
-                  <p class="warning">* Barang bisa diambil setelah pembayaran</p>
+                  <p class="warning">* Pesanan akan diantar ke asrama yang dituju</p>
+                  <p class="warning">* Mohon pastikan data yang diisi sudah benar</p>
                 </div>
               </div>
             </div>
@@ -759,6 +831,30 @@
         </div>
       </div>
     </div>
+
+    <!-- Add popup HTML -->
+    <div class="popup-overlay" id="popupOverlay"></div>
+
+    <!-- Popup untuk Diambil Sendiri -->
+    <div class="custom-popup" id="pickupPopup">
+      <div class="custom-popup-content">
+        <h3>Pesanan Anda Siap Diambil</h3>
+        <p>Silahkan datang ke Koperasi Nuris dalam waktu 2 jam untuk mengambil pesanan Anda.</p>
+        <p>Mohon siapkan uang tunai sebesar: <span id="pickupTotal"></span></p>
+        <button class="close-popup" onclick="closeCustomPopup()">Mengerti</button>
+      </div>
+    </div>
+
+    <!-- Popup untuk Diantar -->
+    <div class="custom-popup" id="deliveryPopup">
+      <div class="custom-popup-content">
+        <h3>Pesanan Anda Sedang Diproses</h3>
+        <p>Pesanan akan diantar ke asrama Anda dalam waktu 1 jam.</p>
+        <p>Mohon siapkan uang tunai sebesar: <span id="deliveryTotal"></span></p>
+        <button class="close-popup" onclick="closeCustomPopup()">Mengerti</button>
+      </div>
+    </div>
+
     <footer>
       <div class="footer-wrap">
         <div class="left">
@@ -791,5 +887,125 @@
 
     <script src="./src/js/menu.js"></script>
     <script src="./src/js/all.js"></script>
+    <script>
+      // Menangani pemilihan metode pengiriman
+      document.addEventListener("DOMContentLoaded", function () {
+        const deliveryDropbtn = document.getElementById("delivery-dropbtn");
+        const deliveryDropdownContent = document.getElementById("delivery-dropdown-content");
+        const pickupSection = document.getElementById("pickup");
+        const deliverySection = document.getElementById("delivery");
+
+        // Menampilkan dropdown saat tombol diklik
+        deliveryDropbtn.addEventListener("click", function () {
+          deliveryDropdownContent.classList.toggle("show");
+        });
+
+        // Menangani pemilihan opsi dari dropdown
+        deliveryDropdownContent.querySelectorAll("a").forEach((option) => {
+          option.addEventListener("click", function (e) {
+            e.preventDefault();
+            const selectedValue = this.getAttribute("data-value");
+            deliveryDropbtn.textContent = selectedValue;
+            deliveryDropdownContent.classList.remove("show");
+
+            // Menampilkan section yang sesuai
+            if (selectedValue === "Diambil Sendiri") {
+              pickupSection.style.display = "block";
+              deliverySection.style.display = "none";
+            } else if (selectedValue === "Diantar") {
+              pickupSection.style.display = "none";
+              deliverySection.style.display = "block";
+            }
+          });
+        });
+
+        // Menutup dropdown saat mengklik di luar
+        window.addEventListener("click", function (e) {
+          if (!e.target.matches(".dropbtn")) {
+            deliveryDropdownContent.classList.remove("show");
+          }
+        });
+      });
+
+      // Fungsi untuk menampilkan popup
+      function showCustomPopup(type) {
+        const overlay = document.getElementById("popupOverlay");
+        const popup = document.getElementById(type + "Popup");
+        const totalElement = document.getElementById(type + "Total");
+        const totalPrice = document.getElementById("total-price").textContent;
+
+        totalElement.textContent = totalPrice;
+        overlay.style.display = "block";
+        popup.style.display = "block";
+      }
+
+      // Fungsi untuk menutup popup
+      function closeCustomPopup() {
+        const overlay = document.getElementById("popupOverlay");
+        const popups = document.querySelectorAll(".custom-popup");
+        const modal = document.getElementById("cartModal");
+
+        overlay.style.display = "none";
+        popups.forEach((popup) => {
+          popup.style.display = "none";
+        });
+
+        // Clear cart data
+        localStorage.removeItem("cartItems");
+
+        // Reset cart count
+        const cartCount = document.getElementById("cart-count");
+        if (cartCount) {
+          cartCount.textContent = "0";
+        }
+
+        // Reset delivery form
+        const studentName = document.getElementById("student-name");
+        const studentDorm = document.getElementById("student-dorm");
+        const studentInstitution = document.getElementById("student-institution");
+        const studentPhone = document.getElementById("student-phone");
+
+        if (studentName) studentName.value = "";
+        if (studentDorm) studentDorm.value = "";
+        if (studentInstitution) studentInstitution.value = "";
+        if (studentPhone) studentPhone.value = "";
+
+        // Reset delivery method
+        const deliveryDropbtn = document.getElementById("delivery-dropbtn");
+        if (deliveryDropbtn) {
+          deliveryDropbtn.textContent = "Diambil Sendiri";
+        }
+
+        // Close modal
+        if (modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      // Menambahkan event listener untuk tombol checkout
+      document.getElementById("checkout-btn").addEventListener("click", function () {
+        const selectedMethod = document.getElementById("delivery-dropbtn").textContent;
+
+        if (selectedMethod === "Diambil Sendiri") {
+          showCustomPopup("pickup");
+        } else if (selectedMethod === "Diantar") {
+          // Validasi form pengiriman
+          const studentName = document.getElementById("student-name").value;
+          const studentDorm = document.getElementById("student-dorm").value;
+          const studentInstitution = document.getElementById("student-institution").value;
+          const studentPhone = document.getElementById("student-phone").value;
+
+          if (!studentName || !studentDorm || !studentInstitution || !studentPhone) {
+            alert("Mohon lengkapi semua data pengiriman terlebih dahulu!");
+            return;
+          }
+
+          showCustomPopup("delivery");
+        }
+      });
+
+      // Menutup popup saat mengklik overlay
+      document.getElementById("popupOverlay").addEventListener("click", closeCustomPopup);
+    </script>
   </body>
 </html>
